@@ -1,8 +1,7 @@
-import json
 import re
 import requests
-from bs4 import BeautifulSoup
 import statistics
+from bs4 import BeautifulSoup
 
 
 def extract_addr(cadastr=None):
@@ -54,6 +53,7 @@ def extract_price_cian(region):
     soup = BeautifulSoup(response_pars.text, 'html.parser')
     all_soup = soup.findAll('div', class_="_93444fe79c--row--kEHOK")
     list_cia = []
+    list_price = []
 
     for one_soup in all_soup:
         temp_list_cia = []
@@ -69,9 +69,21 @@ def extract_price_cian(region):
             if not matches:
                 pass
             else:
-                print(f"{matches[0][0]}")
+                matqqq = int((matches[0][0]).replace(" ", ""))
+                list_price.append(int(matqqq // 2))
 
+    # return list_price
+    finish_price = statistics.mean(list_price)
+    return int(finish_price)
 
+def extract_price_yandex(region):
+    URL_REG = f"https://realty.ya.ru/gate/react-suggest/region/?text={region}"
+    response_reg = requests.request("GET", URL_REG)
+    print(response_reg.text)
+    # regionid = response_reg.json()['data']['items'][0]['id']
+    # URL_PARS = f"https://www.cian.ru/cat.php?deal_type=sale&engine_version=2&object_type%5B0%5D=3&offer_type=suburban" \
+    #            f"&region={regionid}"
+    # response_pars = requests.request("GET", URL_PARS)
 
 
 def extract_tbankrot():
@@ -154,6 +166,6 @@ def extract_tbankrot():
 
 
 if __name__ == '__main__':
-    extract_price_cian("Москва")
+    extract_price_yandex("Магадан")
     # extract_tbankrot()
     # extract_addr()
